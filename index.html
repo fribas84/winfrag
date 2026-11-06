@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Disk Defragmenter</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000080'/%3E%3Crect x='1' y='1' width='6' height='6' fill='%236ae5fb'/%3E%3Crect x='9' y='1' width='6' height='6' fill='%230208aa'/%3E%3Crect x='1' y='9' width='6' height='6' fill='%2364d940'/%3E%3Crect x='9' y='9' width='6' height='6' fill='%23ea3a2e'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <symbol id="i-pc" viewBox="0 0 32 32">
+      <rect x="1" y="2" width="20" height="16" fill="#d4d0c8" stroke="#000" stroke-width="1"/>
+      <rect x="3" y="4" width="16" height="10" fill="#008080"/>
+      <rect x="3" y="14" width="16" height="2" fill="#fff"/>
+      <rect x="8" y="18" width="6" height="2" fill="#808080"/>
+      <rect x="4" y="20" width="14" height="3" fill="#c0c0c0" stroke="#000" stroke-width="1"/>
+      <rect x="22" y="7" width="9" height="16" fill="#e4e4e4" stroke="#000" stroke-width="1"/>
+      <rect x="23" y="9" width="7" height="4" fill="#000080"/>
+      <rect x="23" y="15" width="7" height="1" fill="#808080"/>
+      <rect x="23" y="17" width="7" height="1" fill="#fff"/>
+      <rect x="24" y="20" width="2" height="2" fill="#18a018"/>
+    </symbol>
+    <symbol id="i-bin" viewBox="0 0 32 32">
+      <rect x="9" y="5" width="14" height="3" fill="#c0c0c0" stroke="#000" stroke-width="1"/>
+      <rect x="13" y="2" width="6" height="4" fill="#d4d0c8" stroke="#000" stroke-width="1"/>
+      <path d="M8 9 H24 L21 29 H11 Z" fill="#c0c0c0" stroke="#000" stroke-width="1"/>
+      <path d="M12 12 L11.2 26" stroke="#fff" stroke-width="1"/>
+      <path d="M16 12 L16 26" stroke="#808080" stroke-width="1"/>
+      <path d="M20 12 L20.8 26" stroke="#fff" stroke-width="1"/>
+    </symbol>
+    <symbol id="i-defrag" viewBox="0 0 32 32">
+      <rect x="2" y="2" width="28" height="28" fill="#c0c0c0" stroke="#000" stroke-width="1"/>
+      <rect x="5" y="5" width="22" height="18" fill="#fff" stroke="#808080" stroke-width="1"/>
+      <rect x="6" y="6" width="5" height="4" fill="#0208aa"/>
+      <rect x="12" y="6" width="5" height="4" fill="#0208aa"/>
+      <rect x="18" y="6" width="4" height="4" fill="#6ae5fb"/>
+      <rect x="23" y="6" width="3" height="4" fill="#fff"/>
+      <rect x="6" y="11" width="5" height="4" fill="#6ae5fb"/>
+      <rect x="12" y="11" width="5" height="4" fill="#64d940"/>
+      <rect x="18" y="11" width="4" height="4" fill="#ea3a2e"/>
+      <rect x="23" y="11" width="3" height="4" fill="#000"/>
+      <rect x="6" y="16" width="5" height="4" fill="#fff"/>
+      <rect x="12" y="16" width="5" height="4" fill="#6ae5fb"/>
+      <rect x="18" y="16" width="8" height="4" fill="#0208aa"/>
+      <rect x="5" y="24" width="14" height="3" fill="#000080"/>
+    </symbol>
+    <symbol id="i-defrag-link" viewBox="0 0 32 32">
+      <use href="#i-defrag"/>
+      <path d="M4 18 H11 V21 H15 L9 15 V18 H4 Z" fill="#fff" stroke="#000" stroke-width="1" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-floppy" viewBox="0 0 32 32">
+      <rect x="6" y="3" width="20" height="26" fill="#d8d4c8" stroke="#000" stroke-width="1"/>
+      <rect x="8" y="5" width="16" height="8" fill="#9aa0a8" stroke="#000" stroke-width="1"/>
+      <rect x="14" y="6" width="4" height="5" fill="#c0c0c0"/>
+      <rect x="8" y="16" width="16" height="10" fill="#f4f4f4" stroke="#808080" stroke-width="1"/>
+      <rect x="11" y="19" width="10" height="2" fill="#000080"/>
+    </symbol>
+    <symbol id="i-hdd" viewBox="0 0 32 32">
+      <rect x="4" y="8" width="24" height="16" fill="#d8d4c8" stroke="#000" stroke-width="1"/>
+      <rect x="6" y="10" width="14" height="8" fill="#efefef" stroke="#808080" stroke-width="1"/>
+      <rect x="8" y="12" width="8" height="2" fill="#000080"/>
+      <rect x="22" y="12" width="3" height="3" fill="#18a018" stroke="#000" stroke-width="1"/>
+      <rect x="6" y="20" width="20" height="1" fill="#fff"/>
+    </symbol>
+    <symbol id="i-start" viewBox="0 0 18 18">
+      <rect x="1" y="2" width="7" height="6" fill="#e23b32"/>
+      <rect x="9" y="1" width="8" height="7" fill="#2f9e32"/>
+      <rect x="1" y="9" width="7" height="8" fill="#2a46c8"/>
+      <rect x="9" y="9" width="8" height="8" fill="#f0c31f"/>
+    </symbol>
+    <symbol id="i-shut" viewBox="0 0 16 16">
+      <rect x="1" y="2" width="14" height="10" fill="#c0c0c0" stroke="#000" stroke-width="1"/>
+      <rect x="3" y="4" width="10" height="6" fill="#000080"/>
+      <rect x="5" y="12" width="6" height="1" fill="#000"/>
+      <rect x="3" y="13" width="10" height="2" fill="#808080" stroke="#000" stroke-width="1"/>
+    </symbol>
+    <symbol id="g-min" viewBox="0 0 10 10">
+      <rect x="1" y="7" width="8" height="2" fill="#000"/>
+    </symbol>
+    <symbol id="g-max" viewBox="0 0 10 10">
+      <rect x="1" y="1" width="8" height="8" fill="none" stroke="#000" stroke-width="1"/>
+      <rect x="1" y="1" width="8" height="2" fill="#000"/>
+    </symbol>
+    <symbol id="g-restore" viewBox="0 0 10 10">
+      <rect x="3" y="1" width="6" height="6" fill="#c0c0c0" stroke="#000" stroke-width="1"/>
+      <rect x="3" y="1" width="6" height="2" fill="#000"/>
+      <rect x="1" y="3" width="6" height="6" fill="#c0c0c0" stroke="#000" stroke-width="1"/>
+      <rect x="1" y="3" width="6" height="2" fill="#000"/>
+    </symbol>
+    <symbol id="g-close" viewBox="0 0 10 10">
+      <path d="M2 2 L8 8 M8 2 L2 8" stroke="#000" stroke-width="1.6" fill="none"/>
+    </symbol>
+  </svg>
+
+  <div class="desktop" id="desktop">
+    <div class="icons" id="icons">
+      <button type="button" class="icon" data-icon="pc">
+        <svg class="ico ico-lg" aria-hidden="true"><use href="#i-pc"/></svg>
+        <span>My Computer</span>
+      </button>
+      <button type="button" class="icon" data-icon="bin">
+        <svg class="ico ico-lg" aria-hidden="true"><use href="#i-bin"/></svg>
+        <span>Recycle Bin</span>
+      </button>
+      <button type="button" class="icon" data-icon="defrag">
+        <svg class="ico ico-lg" aria-hidden="true"><use href="#i-defrag-link"/></svg>
+        <span>Disk Defragmenter</span>
+      </button>
+    </div>
+
+    <section class="window active" id="winDefrag" aria-labelledby="titleText">
+      <div class="title-bar" id="titleBar">
+        <button type="button" class="title-icon" id="sysBtn" aria-label="System menu" aria-haspopup="menu" aria-expanded="false">
+          <svg class="ico ico-sm" aria-hidden="true"><use href="#i-defrag"/></svg>
+        </button>
+        <div class="title-text" id="titleText">Disk Defragmenter</div>
+        <div class="title-controls">
+          <button type="button" class="title-btn" id="btnMin" aria-label="Minimize">
+            <svg aria-hidden="true"><use href="#g-min"/></svg>
+          </button>
+          <button type="button" class="title-btn" id="btnMax" aria-label="Maximize">
+            <svg id="glyphMax" aria-hidden="true"><use href="#g-max"/></svg>
+            <svg id="glyphRestore" hidden aria-hidden="true"><use href="#g-restore"/></svg>
+          </button>
+          <button type="button" class="title-btn" id="btnClose" aria-label="Close">
+            <svg aria-hidden="true"><use href="#g-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="menu-pop sys-menu" id="sysMenu" role="menu" hidden>
+        <button type="button" role="menuitem" id="sysRestore" data-action="sys-restore" disabled>Restore</button>
+        <button type="button" role="menuitem" disabled>Move</button>
+        <button type="button" role="menuitem" disabled>Size</button>
+        <button type="button" role="menuitem" data-action="sys-min">Minimize</button>
+        <button type="button" role="menuitem" id="sysMax" data-action="sys-max">Maximize</button>
+        <div class="menu-sep" role="separator"></div>
+        <button type="button" role="menuitem" data-action="sys-close"><span class="acc">C</span>lose</button>
+      </div>
+
+      <div class="menu-bar">
+        <div class="menu">
+          <button type="button" class="menu-btn" id="menuDefrag" aria-expanded="false" aria-haspopup="menu"><span class="acc">D</span>efragment</button>
+          <div class="menu-pop" role="menu" hidden>
+            <button type="button" role="menuitem" id="mStart" data-action="start">Start</button>
+            <button type="button" role="menuitem" id="mPause" data-action="pause" disabled>Pause</button>
+            <button type="button" role="menuitem" id="mStop" data-action="stop" disabled>Stop</button>
+            <div class="menu-sep" role="separator"></div>
+            <button type="button" role="menuitem" data-action="exit">Exit</button>
+          </div>
+        </div>
+        <div class="menu">
+          <button type="button" class="menu-btn" id="menuSettings" aria-expanded="false" aria-haspopup="menu"><span class="acc">S</span>ettings</button>
+          <div class="menu-pop" role="menu" hidden>
+            <div class="menu-subwrap">
+              <button type="button" class="submenu-item" aria-haspopup="menu">Speed<span class="arrow" aria-hidden="true">&#9654;</span></button>
+              <div class="menu-pop submenu" role="menu" hidden>
+                <button type="button" role="menuitemradio" data-speed="slow" aria-checked="false"><span class="mark" aria-hidden="true">&#10003;</span>Slow</button>
+                <button type="button" role="menuitemradio" data-speed="normal" aria-checked="true"><span class="mark on" aria-hidden="true">&#10003;</span>Normal</button>
+                <button type="button" role="menuitemradio" data-speed="fast" aria-checked="false"><span class="mark" aria-hidden="true">&#10003;</span>Fast</button>
+              </div>
+            </div>
+            <div class="menu-sep" role="separator"></div>
+            <button type="button" role="menuitem" id="mNew" data-action="new-map">New random layout</button>
+          </div>
+        </div>
+        <div class="menu">
+          <button type="button" class="menu-btn" id="menuHelp" aria-expanded="false" aria-haspopup="menu"><span class="acc">H</span>elp</button>
+          <div class="menu-pop" role="menu" hidden>
+            <button type="button" role="menuitem" data-action="about">About Disk Defragmenter...</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="client">
+        <div class="info-row">
+          <div id="fragLine">Drive (C:) is --% fragmented.</div>
+          <div class="drive-pick">
+            <span class="drive-label">Drive</span>
+            <div class="combo" id="driveCombo">
+              <div class="combo-value" id="driveValue">(C:)</div>
+              <button type="button" class="combo-btn" id="driveBtn" aria-haspopup="listbox" aria-expanded="false" aria-label="Select drive">&#9662;</button>
+              <div class="combo-pop" id="drivePop" role="listbox" hidden>
+                <button type="button" role="option" data-drive="A">3½ Floppy (A:)</button>
+                <button type="button" role="option" data-drive="C" aria-selected="true">(C:)</button>
+                <button type="button" role="option" data-drive="D">(D:)</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="map-row">
+          <div class="map-well" id="mapWell">
+            <canvas id="map" width="512" height="256" role="img" aria-label="Simulated cluster map. Colors match the legend. No real disk is shown."></canvas>
+          </div>
+          <fieldset class="group legend">
+            <legend>Legend</legend>
+            <div class="legend-item"><canvas class="swatch" data-state="free" width="16" height="14"></canvas><span>Free space</span></div>
+            <div class="legend-item"><canvas class="swatch" data-state="used" width="16" height="14"></canvas><span>Used data</span></div>
+            <div class="legend-item"><canvas class="swatch" data-state="opt" width="16" height="14"></canvas><span>Optimized data</span></div>
+            <div class="legend-item"><canvas class="swatch" data-state="unmov" width="16" height="14"></canvas><span>Unmovable data</span></div>
+            <div class="legend-item"><canvas class="swatch" data-state="read" width="16" height="14"></canvas><span>Reading</span></div>
+            <div class="legend-item"><canvas class="swatch" data-state="write" width="16" height="14"></canvas><span>Writing</span></div>
+            <div class="legend-item"><canvas class="swatch" data-state="bad" width="16" height="14"></canvas><span>Bad cluster</span></div>
+          </fieldset>
+        </div>
+
+        <div class="progress-row">
+          <div class="progress-well" aria-hidden="true">
+            <div class="progress-clip" id="progressClip">
+              <div class="progress-chunks"></div>
+            </div>
+          </div>
+          <div id="pct">0% complete</div>
+        </div>
+
+        <div class="controls">
+          <button type="button" class="cmd" id="btnStart">Start</button>
+          <button type="button" class="cmd" id="btnPause" disabled>Pause</button>
+          <button type="button" class="cmd" id="btnStop" disabled>Stop</button>
+          <div class="speed" role="radiogroup" aria-label="Speed">
+            <span>Speed:</span>
+            <label><input type="radio" name="speed" value="slow">Slow</label>
+            <label><input type="radio" name="speed" value="normal" checked>Normal</label>
+            <label><input type="radio" name="speed" value="fast">Fast</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="status-bar">
+        <div class="status-field status-main" id="statusText">Click Start to defragment this drive.</div>
+        <div class="status-field" id="speedText">Speed: Normal</div>
+        <div class="status-field elapsed" id="elapsedText">Elapsed: 00:00:00</div>
+        <div class="resize-grip" id="grip" title="Resize" aria-hidden="true">
+          <svg viewBox="0 0 12 12" width="12" height="12">
+            <path d="M11 1 L1 11 M11 5 L5 11 M11 9 L9 11" stroke="#808080" fill="none"/>
+            <path d="M10 1 L1 10 M10 5 L5 10 M10 9 L9 10" stroke="#fff" fill="none"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="window" id="winPc" hidden aria-labelledby="pcTitle">
+      <div class="title-bar" id="pcTitleBar">
+        <svg class="ico ico-sm" aria-hidden="true"><use href="#i-pc"/></svg>
+        <div class="title-text" id="pcTitle">My Computer</div>
+        <div class="title-controls">
+          <button type="button" class="title-btn" id="pcMin" aria-label="Minimize">
+            <svg aria-hidden="true"><use href="#g-min"/></svg>
+          </button>
+          <button type="button" class="title-btn" disabled aria-label="Maximize">
+            <svg aria-hidden="true"><use href="#g-max"/></svg>
+          </button>
+          <button type="button" class="title-btn" id="pcClose" aria-label="Close">
+            <svg aria-hidden="true"><use href="#g-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="menu-bar">
+        <div class="menu">
+          <button type="button" class="menu-btn" aria-expanded="false" aria-haspopup="menu"><span class="acc">F</span>ile</button>
+          <div class="menu-pop" role="menu" hidden>
+            <button type="button" role="menuitem" data-action="close-pc">Close</button>
+          </div>
+        </div>
+      </div>
+      <div class="client">
+        <div class="explorer" id="explorer">
+          <button type="button" class="drive" data-drive-open="A">
+            <svg class="ico ico-lg" aria-hidden="true"><use href="#i-floppy"/></svg>
+            <span>3½ Floppy (A:)</span>
+          </button>
+          <button type="button" class="drive" data-drive-open="C">
+            <svg class="ico ico-lg" aria-hidden="true"><use href="#i-hdd"/></svg>
+            <span>(C:)</span>
+          </button>
+          <button type="button" class="drive" data-drive-open="D">
+            <svg class="ico ico-lg" aria-hidden="true"><use href="#i-hdd"/></svg>
+            <span>(D:)</span>
+          </button>
+        </div>
+      </div>
+      <div class="status-bar">
+        <div class="status-field status-main">3 object(s)</div>
+        <div class="status-field">My Computer</div>
+      </div>
+    </section>
+
+    <div class="taskbar">
+      <div class="start-anchor">
+        <button type="button" id="startBtn" aria-haspopup="menu" aria-expanded="false">
+          <svg class="ico ico-sm" aria-hidden="true"><use href="#i-start"/></svg>
+          <span>Start</span>
+        </button>
+        <div class="start-menu" id="startMenu" role="menu" hidden>
+          <div class="start-stripe" aria-hidden="true"><span>Windows <strong>98</strong></span></div>
+          <div class="start-items">
+            <button type="button" data-action="open-defrag">
+              <svg class="ico ico-sm" aria-hidden="true"><use href="#i-defrag"/></svg>
+              <span>Disk Defragmenter</span>
+            </button>
+            <div class="menu-sep" role="separator"></div>
+            <button type="button" data-action="shutdown">
+              <svg class="ico ico-sm" aria-hidden="true"><use href="#i-shut"/></svg>
+              <span>Shut Down...</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="tasks">
+        <button type="button" class="task-btn" id="taskDefrag" aria-pressed="true">
+          <svg class="ico ico-sm" aria-hidden="true"><use href="#i-defrag"/></svg>
+          <span id="taskDefragLabel">Disk Defragmenter</span>
+        </button>
+        <button type="button" class="task-btn" id="taskPc" hidden aria-pressed="false">
+          <svg class="ico ico-sm" aria-hidden="true"><use href="#i-pc"/></svg>
+          <span>My Computer</span>
+        </button>
+      </div>
+      <div class="tray">
+        <time id="clock" datetime="">12:00 PM</time>
+      </div>
+    </div>
+  </div>
+
+  <div id="shade" hidden></div>
+
+  <div class="window dialog" id="dlgAbout" role="dialog" aria-modal="true" aria-labelledby="aboutHeading" hidden data-close="ok">
+    <div class="title-bar">
+      <svg class="ico ico-sm" aria-hidden="true"><use href="#i-defrag"/></svg>
+      <div class="title-text" id="aboutHeading">About Disk Defragmenter</div>
+      <div class="title-controls">
+        <button type="button" class="title-btn" data-dlg-x aria-label="Close">
+          <svg aria-hidden="true"><use href="#g-close"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="dialog-body">
+      <div class="dialog-row">
+        <svg class="ico ico-lg" aria-hidden="true"><use href="#i-defrag"/></svg>
+        <div class="about-copy">
+          <strong>Disk Defragmenter</strong><br>
+          A Windows 98-style toy.<br><br>
+          The cluster map is a random picture. Blocks jump around for show. This program does not read or write a disk, and it does not defragment anything.<br><br>
+          Toy build 4.10
+        </div>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="cmd" data-default data-dlg-x>OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="window dialog" id="dlgDone" role="dialog" aria-modal="true" aria-labelledby="doneHeading" hidden data-close="ok">
+    <div class="title-bar">
+      <svg class="ico ico-sm" aria-hidden="true"><use href="#i-defrag"/></svg>
+      <div class="title-text" id="doneHeading">Disk Defragmenter</div>
+      <div class="title-controls">
+        <button type="button" class="title-btn" data-dlg-x aria-label="Close">
+          <svg aria-hidden="true"><use href="#g-close"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="dialog-body">
+      <div class="dialog-row">
+        <svg class="ico ico-lg" aria-hidden="true"><use href="#i-defrag"/></svg>
+        <div class="about-copy" id="doneBody">Defragmentation is complete.</div>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="cmd" data-default data-dlg-x>OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="window dialog" id="dlgMsg" role="dialog" aria-modal="true" aria-labelledby="msgTitle" hidden data-close="ok">
+    <div class="title-bar">
+      <div class="title-text" id="msgTitle">Disk Defragmenter</div>
+      <div class="title-controls">
+        <button type="button" class="title-btn" data-dlg-x aria-label="Close">
+          <svg aria-hidden="true"><use href="#g-close"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="dialog-body">
+      <div class="about-copy" id="msgText"></div>
+      <div class="dialog-actions">
+        <button type="button" class="cmd" id="msgOk" data-default data-dlg-x>OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="window dialog" id="dlgShut" role="dialog" aria-modal="true" aria-labelledby="shutHeading" hidden data-close="cancel">
+    <div class="title-bar">
+      <div class="title-text" id="shutHeading">Shut Down Windows</div>
+      <div class="title-controls">
+        <button type="button" class="title-btn" data-dlg-x aria-label="Close">
+          <svg aria-hidden="true"><use href="#g-close"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="dialog-body">
+      <div>What do you want the computer to do?</div>
+      <div class="shut-options">
+        <label><input type="radio" name="shut" value="shut" checked>Shut down</label>
+        <label><input type="radio" name="shut" value="restart">Restart</label>
+        <label><input type="radio" name="shut" value="dos">Restart in MS-DOS mode</label>
+      </div>
+      <div class="dialog-actions dialog-actions-end">
+        <button type="button" class="cmd" id="shutOk" data-default>OK</button>
+        <button type="button" class="cmd" data-dlg-x>Cancel</button>
+        <button type="button" class="cmd" id="shutHelp">Help</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="safe" id="safe" hidden>
+    <div class="safe-card">
+      <svg class="safe-logo" viewBox="0 0 36 36" width="48" height="48" aria-hidden="true">
+        <rect x="1" y="2" width="15" height="14" fill="#e23b32"/>
+        <rect x="18" y="1" width="16" height="15" fill="#2f9e32"/>
+        <rect x="1" y="18" width="15" height="16" fill="#2a46c8"/>
+        <rect x="18" y="18" width="16" height="16" fill="#f0c31f"/>
+      </svg>
+      <p class="safe-line">It's now safe to turn off your computer.</p>
+      <p class="safe-hint">Click to return to the desktop.</p>
+    </div>
+  </div>
+
+  <div class="dos" id="dos" hidden tabindex="-1">
+    <p>MS-DOS mode is not really here.</p>
+    <p></p>
+    <p>C:\&gt;<span class="blink">_</span></p>
+    <p class="dos-hint">Press any key to return.</p>
+  </div>
+
+  <div class="reboot" id="reboot" hidden></div>
+  <div id="tip" class="tip" hidden></div>
+  <div id="live" class="sr" aria-live="polite"></div>
+
+  <noscript>
+    <p class="noscript">This toy needs JavaScript to move the blocks around.</p>
+  </noscript>
+  <script src="defrag.js"></script>
+</body>
+</html>
