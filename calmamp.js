@@ -220,7 +220,7 @@ let ampPaused = false;
 let ampRemain = false;
 let ampRepeat = true;
 let ampShuffle = false;
-let ampScope = false;
+let ampScope = true;
 let ampPosition = 0;
 let ampOrigin = null;
 let ampHorizon = 0;
@@ -270,11 +270,13 @@ function say(text) {
 
 function setMarquee() {
   const piece = track();
-  ampSong.textContent = piece.title + '   —   ' + piece.blurb + '   —   generated in this window';
+  ampSong.textContent = (ampIndex + 1) + '. ' + piece.title + ' (' + fmtClock(piece.length) + ')';
   ampSong.style.animation = 'none';
   void ampSong.offsetWidth;
   ampSong.style.animation = '';
   ampKind.textContent = piece.kind;
+  const total = document.getElementById('ampPlTotal');
+  if (total) total.textContent = fmtClock(piece.length);
 }
 
 function renderList() {
@@ -288,7 +290,7 @@ function renderList() {
     if (i === ampIndex && ampPlaying) btn.classList.add('is-current');
     btn.tabIndex = i === ampSelected ? 0 : -1;
     const num = document.createElement('span');
-    num.textContent = (i === ampIndex && ampPlaying) ? '>' : String(i + 1);
+    num.textContent = String(i + 1) + '.';
     const name = document.createElement('span');
     name.textContent = piece.title;
     const len = document.createElement('span');
@@ -790,8 +792,8 @@ function drawClock(text, minus) {
       g.stroke();
     }
   }
-  pass('#0c3b22', true);
-  pass('#49ff86', false);
+  pass('#063318', true);
+  pass('#3dff6a', false);
 }
 
 function updateClock() {
@@ -803,6 +805,8 @@ function updateClock() {
     ampLastClock = text;
     drawClock(text, ampRemain);
     ampShadeTime.textContent = (ampRemain ? '-' : '') + text;
+    const plClock = document.getElementById('ampPlClock');
+    if (plClock) plClock.textContent = text;
   }
   if (!ampSeeking) ampSeek.value = String(Math.round((pos / length) * 1000));
   const spoken = (ampRemain ? 'Remaining ' : 'Elapsed ') + text + '. Activate to switch.';
@@ -958,7 +962,8 @@ function buildEq() {
       if (node) node.gain.value = Number(input.value);
     });
     label.append(input, span);
-    ampEq.append(label);
+    const bands = document.getElementById('ampEqBands');
+    (bands || ampEq).append(label);
     ampEqInputs.push(input);
   });
 }
@@ -1051,7 +1056,10 @@ function wireAmp() {
     const pos = (Number(ampSeek.value) / 1000) * track().length;
     const shown = ampRemain ? track().length - pos : pos;
     drawClock(fmtClock(shown), ampRemain);
-    ampShadeTime.textContent = (ampRemain ? '-' : '') + fmtClock(shown);
+    const shownText = fmtClock(shown);
+    ampShadeTime.textContent = (ampRemain ? '-' : '') + shownText;
+    const plClock = document.getElementById('ampPlClock');
+    if (plClock) plClock.textContent = shownText;
     if (!ampSeeking) doSeek(pos);
   });
 
@@ -1065,6 +1073,16 @@ function wireAmp() {
     ampPl.hidden = !on;
     ampPlBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
   });
+  document.getElementById('ampEqX').addEventListener('click', () => {
+    ampEq.hidden = true;
+    ampEqBtn.setAttribute('aria-pressed', 'false');
+  });
+  document.getElementById('ampPlX').addEventListener('click', () => {
+    ampPl.hidden = true;
+    ampPlBtn.setAttribute('aria-pressed', 'false');
+  });
+  document.getElementById('ampSel').addEventListener('click', () => selectTrack(ampIndex, true));
+  document.getElementById('ampMisc').addEventListener('click', () => document.getElementById('ampAbout').click());
 
   ampTask.addEventListener('click', () => {
     if (ampClosed || ampWin.hidden) openAmp();

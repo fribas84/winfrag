@@ -369,8 +369,8 @@
           <svg viewBox="0 0 8 8" width="8" height="8" aria-hidden="true"><path d="M1 2 H7 M1 4 H7 M1 6 H7" stroke="currentColor" stroke-width="1"/></svg>
         </button>
         <div class="amp-logo" id="ampLogo">CALMAMP</div>
+        <div class="amp-marquee"><span id="ampSong">Press play. The sound is made in this window.</span></div>
         <span class="amp-shade-time" id="ampShadeTime">00:00</span>
-        <span class="amp-title-gap"></span>
         <button type="button" class="amp-winbtn amp-shade-play" id="ampShadePlay" aria-label="Play or pause">
           <svg class="play" viewBox="0 0 8 8" width="8" height="8" aria-hidden="true"><path d="M2 1 L7 4 L2 7 Z" fill="currentColor"/></svg>
           <svg class="pause" viewBox="0 0 8 8" width="8" height="8" aria-hidden="true"><path d="M2 1 H3.4 V7 H2 Z M4.6 1 H6 V7 H4.6 Z" fill="currentColor"/></svg>
@@ -381,7 +381,7 @@
         <button type="button" class="amp-winbtn" id="ampShade" aria-pressed="false" aria-label="Shade window">
           <svg viewBox="0 0 8 8" width="8" height="8" aria-hidden="true"><path d="M1 3 H7 L4 6 Z" fill="currentColor"/></svg>
         </button>
-        <button type="button" class="amp-winbtn" id="ampClose" aria-label="Close">
+        <button type="button" class="amp-winbtn amp-x" id="ampClose" aria-label="Close">
           <svg viewBox="0 0 8 8" width="8" height="8" aria-hidden="true"><path d="M2 2 L6 6 M6 2 L2 6" stroke="currentColor" stroke-width="1.2"/></svg>
         </button>
         <div class="amp-pop" id="ampMenu" role="menu" hidden>
@@ -393,11 +393,10 @@
           <button type="button" class="amp-time" id="ampTimeBtn" aria-label="Elapsed 00:00. Activate to show time remaining.">
             <canvas id="ampTime" width="236" height="80"></canvas>
           </button>
-          <button type="button" class="amp-visbtn" id="ampVisBtn" aria-label="Spectrum. Activate to switch to the oscilloscope.">
-            <canvas id="ampVis" width="156" height="40"></canvas>
+          <button type="button" class="amp-visbtn" id="ampVisBtn" aria-label="Oscilloscope. Activate to switch to the spectrum.">
+            <canvas id="ampVis" width="90" height="36"></canvas>
           </button>
         </div>
-        <div class="amp-marquee"><span id="ampSong">Press play. The sound is made in this window.</span></div>
         <div class="amp-meta">
           <span id="ampKind">soft</span>
           <span id="ampRate">44<span>kHz</span></span>
@@ -423,21 +422,44 @@
           <span class="amp-transport-gap"></span>
           <button type="button" class="amp-mode" id="ampShuffle" aria-pressed="false" title="Shuffle" aria-label="Shuffle">SH</button>
           <button type="button" class="amp-mode" id="ampRepeat" aria-pressed="true" title="Repeat" aria-label="Repeat">RP</button>
+          <button type="button" class="amp-mode" id="ampEqBtn" aria-pressed="true">EQ</button>
+          <button type="button" class="amp-mode" id="ampPlBtn" aria-pressed="true">PL</button>
         </div>
         <div class="amp-mix">
           <label>VOL <input id="ampVol" type="range" min="0" max="100" value="70" aria-label="Volume"></label>
           <label>BAL <input id="ampBal" type="range" min="-100" max="100" value="0" aria-label="Balance"></label>
-          <button type="button" id="ampEqBtn" aria-pressed="false">EQ</button>
-          <button type="button" id="ampPlBtn" aria-pressed="true">PL</button>
         </div>
-        <div class="amp-eq" id="ampEq" hidden></div>
+      </div>
+      <div class="amp-eq" id="ampEq">
+        <div class="amp-subhead">
+          <span>CALMAMP EQUALIZER</span>
+          <button type="button" class="amp-winbtn amp-x" id="ampEqX" aria-label="Close equalizer">
+            <svg viewBox="0 0 8 8" width="8" height="8" aria-hidden="true"><path d="M2 2 L6 6 M6 2 L2 6" stroke="currentColor" stroke-width="1.2"/></svg>
+          </button>
+        </div>
+        <div class="amp-eq-tools">
+          <span class="amp-lamp is-on">ON</span>
+          <span class="amp-eq-presets">PRESETS</span>
+        </div>
+        <div class="amp-eq-graph">
+          <div class="amp-eq-scale" aria-hidden="true"><span>+12</span><span>0</span><span>-12</span></div>
+          <div class="amp-eq-bands" id="ampEqBands"></div>
+        </div>
       </div>
       <div class="amp-pl" id="ampPl">
-        <div class="amp-pl-bar">
-          <span>Playlist</span>
-          <span>made here</span>
+        <div class="amp-subhead">
+          <span>CALMAMP PLAYLIST</span>
+          <button type="button" class="amp-winbtn amp-x" id="ampPlX" aria-label="Close playlist">
+            <svg viewBox="0 0 8 8" width="8" height="8" aria-hidden="true"><path d="M2 2 L6 6 M6 2 L2 6" stroke="currentColor" stroke-width="1.2"/></svg>
+          </button>
         </div>
         <div class="amp-pl-list" id="ampList" role="listbox" aria-label="Calm pieces"></div>
+        <div class="amp-pl-foot">
+          <button type="button" class="amp-pl-btn" id="ampSel">SEL</button>
+          <button type="button" class="amp-pl-btn" id="ampMisc">MISC</button>
+          <span class="amp-pl-clock" id="ampPlClock">00:00</span>
+          <span class="amp-pl-total" id="ampPlTotal">01:12</span>
+        </div>
       </div>
       <div class="sr" id="ampLive" aria-live="polite"></div>
     </section>
