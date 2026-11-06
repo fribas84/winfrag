@@ -862,6 +862,9 @@ function runAction(action) {
       break;
     case 'about': showDlg($('dlgAbout')); break;
     case 'open-defrag': showDefrag(); break;
+    case 'open-amp':
+      if (window.CalmAmp) window.CalmAmp.open();
+      break;
     case 'shutdown': showDlg($('dlgShut')); break;
     case 'close-pc': closePc(); break;
     case 'sys-min': minimizeDefrag(); break;
@@ -879,6 +882,7 @@ function openIcon(id) {
   if (id === 'defrag') showDefrag();
   else if (id === 'pc') openPc();
   else if (id === 'bin') showMsg('Recycle Bin', 'The Recycle Bin is empty.');
+  else if (id === 'amp' && window.CalmAmp) window.CalmAmp.open();
 }
 
 function hideTip() {
@@ -1340,4 +1344,5 @@ function init() {
   }
 }
 
+window.WinShell = { activate: activate, makeDraggable: makeDraggable, showMsg: showMsg };
 init();

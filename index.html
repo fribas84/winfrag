@@ -75,6 +75,19 @@
       <rect x="5" y="12" width="6" height="1" fill="#000"/>
       <rect x="3" y="13" width="10" height="2" fill="#808080" stroke="#000" stroke-width="1"/>
     </symbol>
+    <symbol id="i-amp" viewBox="0 0 32 32">
+      <rect x="4" y="6" width="24" height="20" fill="#1b1b1b" stroke="#000" stroke-width="1"/>
+      <rect x="6" y="8" width="12" height="8" fill="#04160c" stroke="#0c3b22" stroke-width="1"/>
+      <rect x="7" y="10" width="2" height="5" fill="#3cff6e"/>
+      <rect x="10" y="9" width="2" height="6" fill="#d6e35a"/>
+      <rect x="13" y="11" width="2" height="4" fill="#3cff6e"/>
+      <rect x="20" y="9" width="6" height="5" fill="#c8c8c8" stroke="#000" stroke-width="1"/>
+      <path d="M22 10 L22 13 L25 11.5 Z" fill="#111"/>
+      <rect x="6" y="18" width="20" height="2" fill="#111"/>
+      <rect x="7" y="21" width="3" height="3" fill="#d0d0d0" stroke="#000" stroke-width="1"/>
+      <rect x="11" y="21" width="3" height="3" fill="#d0d0d0" stroke="#000" stroke-width="1"/>
+      <rect x="15" y="21" width="3" height="3" fill="#3cff6e" stroke="#000" stroke-width="1"/>
+    </symbol>
     <symbol id="g-min" viewBox="0 0 10 10">
       <rect x="1" y="7" width="8" height="2" fill="#000"/>
     </symbol>
@@ -106,6 +119,10 @@
       <button type="button" class="icon" data-icon="defrag">
         <svg class="ico ico-lg" aria-hidden="true"><use href="#i-defrag-link"/></svg>
         <span>Disk Defragmenter</span>
+      </button>
+      <button type="button" class="icon" data-icon="amp">
+        <svg class="ico ico-lg" aria-hidden="true"><use href="#i-amp"/></svg>
+        <span>CalmAmp</span>
       </button>
     </div>
 
@@ -286,6 +303,85 @@
       </div>
     </section>
 
+    <section class="window amp" id="winAmp" hidden tabindex="-1" aria-labelledby="ampLogo">
+      <div class="amp-title" id="ampTitleBar">
+        <button type="button" class="amp-winbtn" id="ampMenuBtn" aria-haspopup="menu" aria-expanded="false" aria-label="CalmAmp menu">
+          <svg viewBox="0 0 8 8" width="8" height="8" aria-hidden="true"><path d="M1 2 H7 M1 4 H7 M1 6 H7" stroke="currentColor" stroke-width="1"/></svg>
+        </button>
+        <div class="amp-logo" id="ampLogo">CALMAMP</div>
+        <span class="amp-shade-time" id="ampShadeTime">00:00</span>
+        <span class="amp-title-gap"></span>
+        <button type="button" class="amp-winbtn amp-shade-play" id="ampShadePlay" aria-label="Play or pause">
+          <svg class="play" viewBox="0 0 8 8" width="8" height="8" aria-hidden="true"><path d="M2 1 L7 4 L2 7 Z" fill="currentColor"/></svg>
+          <svg class="pause" viewBox="0 0 8 8" width="8" height="8" aria-hidden="true"><path d="M2 1 H3.4 V7 H2 Z M4.6 1 H6 V7 H4.6 Z" fill="currentColor"/></svg>
+        </button>
+        <button type="button" class="amp-winbtn" id="ampMin" aria-label="Minimize">
+          <svg viewBox="0 0 8 8" width="8" height="8" aria-hidden="true"><path d="M1 6 H7" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+        <button type="button" class="amp-winbtn" id="ampShade" aria-pressed="false" aria-label="Shade window">
+          <svg viewBox="0 0 8 8" width="8" height="8" aria-hidden="true"><path d="M1 3 H7 L4 6 Z" fill="currentColor"/></svg>
+        </button>
+        <button type="button" class="amp-winbtn" id="ampClose" aria-label="Close">
+          <svg viewBox="0 0 8 8" width="8" height="8" aria-hidden="true"><path d="M2 2 L6 6 M6 2 L2 6" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+        <div class="amp-pop" id="ampMenu" role="menu" hidden>
+          <button type="button" role="menuitem" id="ampAbout">About CalmAmp</button>
+        </div>
+      </div>
+      <div class="amp-body">
+        <div class="amp-lcd">
+          <button type="button" class="amp-time" id="ampTimeBtn" aria-label="Elapsed 00:00. Activate to show time remaining.">
+            <canvas id="ampTime" width="236" height="80"></canvas>
+          </button>
+          <button type="button" class="amp-visbtn" id="ampVisBtn" aria-label="Spectrum. Activate to switch to the oscilloscope.">
+            <canvas id="ampVis" width="156" height="40"></canvas>
+          </button>
+        </div>
+        <div class="amp-marquee"><span id="ampSong">Press play. The sound is made in this window.</span></div>
+        <div class="amp-meta">
+          <span id="ampKind">soft</span>
+          <span id="ampRate">44<span>kHz</span></span>
+          <span id="ampStereo">stereo</span>
+        </div>
+        <input class="amp-seek" id="ampSeek" type="range" min="0" max="1000" value="0" aria-label="Position in the piece">
+        <div class="amp-transport">
+          <button type="button" class="amp-tbtn" id="ampPrev" aria-label="Previous">
+            <svg viewBox="0 0 12 10" width="12" height="10" aria-hidden="true"><path d="M1 1 H2.4 V9 H1 Z M11 1 L4 5 L11 9 Z" fill="currentColor"/></svg>
+          </button>
+          <button type="button" class="amp-tbtn amp-play" id="ampPlay" aria-pressed="false" aria-label="Play">
+            <svg viewBox="0 0 12 10" width="12" height="10" aria-hidden="true"><path d="M2 1 L10 5 L2 9 Z" fill="currentColor"/></svg>
+          </button>
+          <button type="button" class="amp-tbtn" id="ampPause" aria-pressed="false" aria-label="Pause">
+            <svg viewBox="0 0 12 10" width="12" height="10" aria-hidden="true"><path d="M2 1 H4 V9 H2 Z M8 1 H10 V9 H8 Z" fill="currentColor"/></svg>
+          </button>
+          <button type="button" class="amp-tbtn" id="ampStop" aria-label="Stop">
+            <svg viewBox="0 0 12 10" width="12" height="10" aria-hidden="true"><rect x="2" y="1" width="8" height="8" fill="currentColor"/></svg>
+          </button>
+          <button type="button" class="amp-tbtn" id="ampNext" aria-label="Next">
+            <svg viewBox="0 0 12 10" width="12" height="10" aria-hidden="true"><path d="M1 1 L8 5 L1 9 Z M9.6 1 H11 V9 H9.6 Z" fill="currentColor"/></svg>
+          </button>
+          <span class="amp-transport-gap"></span>
+          <button type="button" class="amp-mode" id="ampShuffle" aria-pressed="false" title="Shuffle" aria-label="Shuffle">SH</button>
+          <button type="button" class="amp-mode" id="ampRepeat" aria-pressed="true" title="Repeat" aria-label="Repeat">RP</button>
+        </div>
+        <div class="amp-mix">
+          <label>VOL <input id="ampVol" type="range" min="0" max="100" value="70" aria-label="Volume"></label>
+          <label>BAL <input id="ampBal" type="range" min="-100" max="100" value="0" aria-label="Balance"></label>
+          <button type="button" id="ampEqBtn" aria-pressed="false">EQ</button>
+          <button type="button" id="ampPlBtn" aria-pressed="true">PL</button>
+        </div>
+        <div class="amp-eq" id="ampEq" hidden></div>
+      </div>
+      <div class="amp-pl" id="ampPl">
+        <div class="amp-pl-bar">
+          <span>Playlist</span>
+          <span>made here</span>
+        </div>
+        <div class="amp-pl-list" id="ampList" role="listbox" aria-label="Calm pieces"></div>
+      </div>
+      <div class="sr" id="ampLive" aria-live="polite"></div>
+    </section>
+
     <div class="taskbar">
       <div class="start-anchor">
         <button type="button" id="startBtn" aria-haspopup="menu" aria-expanded="false">
@@ -298,6 +394,10 @@
             <button type="button" data-action="open-defrag">
               <svg class="ico ico-sm" aria-hidden="true"><use href="#i-defrag"/></svg>
               <span>Disk Defragmenter</span>
+            </button>
+            <button type="button" data-action="open-amp">
+              <svg class="ico ico-sm" aria-hidden="true"><use href="#i-amp"/></svg>
+              <span>CalmAmp</span>
             </button>
             <div class="menu-sep" role="separator"></div>
             <button type="button" data-action="shutdown">
@@ -315,6 +415,10 @@
         <button type="button" class="task-btn" id="taskPc" hidden aria-pressed="false">
           <svg class="ico ico-sm" aria-hidden="true"><use href="#i-pc"/></svg>
           <span>My Computer</span>
+        </button>
+        <button type="button" class="task-btn" id="taskAmp" hidden aria-pressed="false">
+          <svg class="ico ico-sm" aria-hidden="true"><use href="#i-amp"/></svg>
+          <span>CalmAmp</span>
         </button>
       </div>
       <div class="tray">
@@ -342,6 +446,7 @@
           <strong>Disk Defragmenter</strong><br>
           A Windows 98-style toy.<br><br>
           The cluster map is a random picture. Blocks jump around for show. This program does not read or write a disk, and it does not defragment anything.<br><br>
+          CalmAmp, on the desktop, plays a soft sound made in this page.<br><br>
           Toy build 4.10
         </div>
       </div>
@@ -438,8 +543,9 @@
   <div id="live" class="sr" aria-live="polite"></div>
 
   <noscript>
-    <p class="noscript">This toy needs JavaScript to move the blocks around.</p>
+    <p class="noscript">This toy needs JavaScript to move the blocks and play sound.</p>
   </noscript>
   <script src="defrag.js"></script>
+  <script src="calmamp.js"></script>
 </body>
 </html>
