@@ -1,16 +1,13 @@
-/* DOOM in a desktop window. The same bundle as https://js-dos.com/DOOM/
-   is downloaded from js-dos.com when you click start. This page does not
-   keep a copy of the game. */
+/* DOOM window. The game runs in doom-player.html. Closing this window
+   throws that page away, which stops the emulator and its sound. */
 
 'use strict';
 
 (function () {
-  const API = 'https://js-dos.com/cdn/js-dos-api.js';
-  const BUNDLE = 'https://js-dos.com/cdn/upload/DOOM-@evilution.zip';
-  const EXE = './DOOM/DOOM.EXE';
-
+  const PLAYER = 'doom-player.html';
   const win = document.getElementById('winDoom');
   const titleBar = document.getElementById('doomTitleBar');
+  const frame = document.getElementById('doomFrame');
   const task = document.getElementById('taskDoom');
   const glyphMax = document.getElementById('doomGlyphMax');
   const glyphRestore = document.getElementById('doomGlyphRestore');
@@ -20,8 +17,7 @@
   let closed = true;
   let maximized = false;
   let savedRect = null;
-  let booting = null;
-  let dosbox = null;
+  let running = false;
 
   function setStatus(text) {
     status.textContent = text;
@@ -38,84 +34,20 @@
     task.setAttribute('aria-pressed', pressed ? 'true' : 'false');
   }
 
-  function wrap(el) {
-    const api = {
-      0: el,
-      length: el ? 1 : 0,
-      jquery: '1',
-      append: function (child) {
-        const node = child && (child[0] || child);
-        if (el && node) el.appendChild(node);
-        return api;
-      },
-      click: function (fn) {
-        if (el) el.addEventListener('click', fn);
-        return api;
-      },
-      hide: function () {
-        if (el) el.style.display = 'none';
-        return api;
-      },
-      show: function () {
-        if (el) el.style.display = '';
-        return api;
-      },
-      html: function (value) {
-        if (!el) return '';
-        if (value === undefined) return el.textContent;
-        el.textContent = String(value);
-        return api;
-      }
-    };
-    return api;
+  function startGame() {
+    if (running) return;
+    running = true;
+    frame.src = PLAYER;
   }
 
-  function miniDollar(arg) {
-    if (typeof arg !== 'string') return wrap(null);
-    if (arg.charAt(0) === '<') {
-      const holder = document.createElement('div');
-      holder.innerHTML = arg;
-      return wrap(holder.firstElementChild);
+  function stopGame() {
+    if (document.fullscreenElement) {
+      const exitFs = document.exitFullscreen || document.webkitExitFullscreen;
+      if (exitFs) exitFs.call(document);
     }
-    if (arg.charAt(0) === '#') return wrap(document.getElementById(arg.slice(1)));
-    return wrap(document.querySelector(arg));
-  }
-
-  function loadApi() {
-    if (window.Dosbox && window.__doomDollar) return Promise.resolve();
-    window.__mini$ = miniDollar;
-    return fetch(API).then((res) => {
-      if (!res.ok) throw new Error('js-dos did not load');
-      return res.text();
-    }).then((code) => {
-      const cut = code.indexOf('Dosbox.UI');
-      if (cut < 0) throw new Error('js-dos did not load');
-      const patched = code.slice(0, cut) + code.slice(cut).replace(/\$\(/g, 'window.__mini$(');
-      (0, eval)(patched);
-      window.__doomDollar = true;
-    });
-  }
-
-  function boot() {
-    if (dosbox || booting) return booting || Promise.resolve();
-    setStatus('Loading the player from js-dos.com…');
-    booting = loadApi().then(() => {
-      dosbox = new window.Dosbox({
-        id: 'doomBox',
-        onload: function (boxApi) {
-          boxApi.run(BUNDLE, EXE);
-        },
-        onrun: function () {
-          setStatus('DOOM is running. Arrows move, S fires, W uses, Space runs.');
-        }
-      });
-      setStatus('Click the picture to start. The game is downloaded from js-dos.com.');
-    }).catch((err) => {
-      booting = null;
-      dosbox = null;
-      setStatus(err && err.message ? err.message : 'js-dos did not load.');
-    });
-    return booting;
+    frame.src = 'about:blank';
+    running = false;
+    setStatus('Click the picture to start. DOOM is loaded from js-dos.com.');
   }
 
   function open() {
@@ -124,7 +56,7 @@
     task.hidden = false;
     if (window.WinShell) window.WinShell.activate(win);
     syncTask();
-    boot();
+    startGame();
   }
 
   function minimize() {
@@ -133,6 +65,7 @@
   }
 
   function exit() {
+    stopGame();
     closed = true;
     win.hidden = true;
     if (maximized) toggleMax();
@@ -140,11 +73,12 @@
   }
 
   function fullScreen() {
-    const canvas = document.querySelector('#doomBox canvas');
-    const target = canvas || document.getElementById('doomBox');
-    const req = target.requestFullscreen || target.webkitRequestFullscreen;
-    if (dosbox && dosbox.requestFullScreen) dosbox.requestFullScreen();
-    else if (req) req.call(target);
+    if (!running) return;
+    try {
+      frame.contentWindow.postMessage({ source: 'doom-parent', cmd: 'fullscreen' }, window.location.origin);
+    } catch (err) { /* the player page is gone */ }
+    const req = frame.requestFullscreen || frame.webkitRequestFullscreen;
+    if (req) req.call(frame);
   }
 
   function toggleMax() {
@@ -172,6 +106,13 @@
     maxBtn.setAttribute('aria-label', maximized ? 'Restore' : 'Maximize');
   }
 
+  window.addEventListener('message', (event) => {
+    if (event.origin !== window.location.origin) return;
+    const data = event.data;
+    if (!data || data.source !== 'doom-player' || !running) return;
+    if (typeof data.text === 'string') setStatus(data.text);
+  });
+
   document.getElementById('doomMin').addEventListener('click', minimize);
   maxBtn.addEventListener('click', toggleMax);
   document.getElementById('doomClose').addEventListener('click', exit);
@@ -196,9 +137,9 @@
     snapshot: () => ({
       hidden: win.hidden,
       closed: closed,
-      booted: !!dosbox,
-      status: status.textContent,
-      canvas: !!document.querySelector('#doomBox canvas')
+      running: running,
+      src: frame.getAttribute('src'),
+      status: status.textContent
     })
   };
 })();

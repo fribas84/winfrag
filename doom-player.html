@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>DOOM</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+    #doomBox { width: 100%; height: 100%; }
+    .dosbox-container { width: 100% !important; height: 100% !important; min-width: 0; min-height: 0; }
+    .dosbox-canvas { display: block; width: 100%; height: 100%; background: #000; image-rendering: pixelated; }
+  </style>
+</head>
+<body>
+  <div id="doomBox"></div>
+  <script>
+    (function () {
+      var API = 'https://js-dos.com/cdn/js-dos-api.js';
+      var BUNDLE = 'https://js-dos.com/cdn/upload/DOOM-@evilution.zip';
+      var EXE = './DOOM/DOOM.EXE';
+      var dosbox = null;
+
+      function tell(text) {
+        parent.postMessage({ source: 'doom-player', text: text }, location.origin);
+      }
+
+      function wrap(el) {
+        var api = {
+          0: el,
+          length: el ? 1 : 0,
+          jquery: '1',
+          append: function (child) {
+            var node = child && (child[0] || child);
+            if (el && node) el.appendChild(node);
+            return api;
+          },
+          click: function (fn) {
+            if (el) el.addEventListener('click', fn);
+            return api;
+          },
+          hide: function () { if (el) el.style.display = 'none'; return api; },
+          show: function () { if (el) el.style.display = ''; return api; },
+          html: function (value) {
+            if (!el) return '';
+            if (value === undefined) return el.textContent;
+            el.textContent = String(value);
+            return api;
+          }
+        };
+        return api;
+      }
+
+      function miniDollar(arg) {
+        if (typeof arg !== 'string') return wrap(null);
+        if (arg.charAt(0) === '<') {
+          var holder = document.createElement('div');
+          holder.innerHTML = arg;
+          return wrap(holder.firstElementChild);
+        }
+        if (arg.charAt(0) === '#') return wrap(document.getElementById(arg.slice(1)));
+        return wrap(document.querySelector(arg));
+      }
+
+      function boot() {
+        window.__mini$ = miniDollar;
+        fetch(API).then(function (res) {
+          if (!res.ok) throw new Error('js-dos did not load');
+          return res.text();
+        }).then(function (code) {
+          var cut = code.indexOf('Dosbox.UI');
+          if (cut < 0) throw new Error('js-dos did not load');
+          var patched = code.slice(0, cut) + code.slice(cut).replace(/\$\(/g, 'window.__mini$(');
+          (0, eval)(patched);
+          dosbox = new window.Dosbox({
+            id: 'doomBox',
+            onload: function (boxApi) { boxApi.run(BUNDLE, EXE); },
+            onrun: function () {
+              tell('DOOM is running. Arrows move, S fires, W uses, Space runs.');
+            }
+          });
+          tell('Click the picture to start. The game is downloaded from js-dos.com.');
+        }).catch(function (err) {
+          tell(err && err.message ? err.message : 'js-dos did not load.');
+        });
+      }
+
+      window.addEventListener('message', function (event) {
+        if (event.origin !== location.origin) return;
+        var data = event.data;
+        if (!data || data.source !== 'doom-parent') return;
+        if (data.cmd === 'fullscreen' && dosbox && dosbox.requestFullScreen) dosbox.requestFullScreen();
+      });
+
+      boot();
+    })();
+  </script>
+</body>
+</html>
