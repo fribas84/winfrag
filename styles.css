@@ -1376,3 +1376,54 @@ input[type="radio"]:focus-visible { outline: 1px dotted #000; outline-offset: 2p
   .amp-marquee span { animation: none; padding-left: 6px; }
   .window.amp.is-idle .amp-play { animation: none; }
 }
+
+/* ---- Notepad, beside Disk Defragmenter ---- */
+
+#winNote {
+  left: 118px;
+  top: 44px;
+  width: min(460px, calc(100vw - 20px));
+  height: min(320px, calc(100vh - 78px));
+}
+
+#winNote.maximized {
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: calc(100% - 30px) !important;
+}
+
+.note-client {
+  padding: 2px;
+  gap: 0;
+}
+
+#noteText {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  height: 100%;
+  margin: 0;
+  resize: none;
+  border: none;
+  padding: 3px 4px;
+  background: #fff;
+  color: #000;
+  font-family: "Liberation Mono", "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.35;
+  box-shadow: var(--sunken);
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: text;
+}
+
+#noteAskText { white-space: pre-line; }
+
+.note-pos {
+  min-width: 92px;
+  text-align: center;
+  flex: none;
+}
+
+#dlgNote { width: min(380px, calc(100vw - 24px)); }

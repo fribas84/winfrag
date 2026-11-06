@@ -865,6 +865,39 @@ function runAction(action) {
     case 'open-amp':
       if (window.CalmAmp) window.CalmAmp.open();
       break;
+    case 'open-note':
+      if (window.NotePad) window.NotePad.open();
+      break;
+    case 'note-new':
+      if (window.NotePad) window.NotePad.newFile();
+      break;
+    case 'note-open':
+      if (window.NotePad) window.NotePad.openFile();
+      break;
+    case 'note-save':
+      if (window.NotePad) window.NotePad.save();
+      break;
+    case 'note-exit':
+      if (window.NotePad) window.NotePad.exit();
+      break;
+    case 'note-undo':
+      if (window.NotePad) window.NotePad.undo();
+      break;
+    case 'note-cut':
+      if (window.NotePad) window.NotePad.cut();
+      break;
+    case 'note-copy':
+      if (window.NotePad) window.NotePad.copy();
+      break;
+    case 'note-paste':
+      if (window.NotePad) window.NotePad.paste();
+      break;
+    case 'note-delete':
+      if (window.NotePad) window.NotePad.deleteSelection();
+      break;
+    case 'note-all':
+      if (window.NotePad) window.NotePad.selectAll();
+      break;
     case 'shutdown': showDlg($('dlgShut')); break;
     case 'close-pc': closePc(); break;
     case 'sys-min': minimizeDefrag(); break;
@@ -883,6 +916,7 @@ function openIcon(id) {
   else if (id === 'pc') openPc();
   else if (id === 'bin') showMsg('Recycle Bin', 'The Recycle Bin is empty.');
   else if (id === 'amp' && window.CalmAmp) window.CalmAmp.open();
+  else if (id === 'note' && window.NotePad) window.NotePad.open();
 }
 
 function hideTip() {
@@ -935,7 +969,7 @@ function makeDraggable(target, handle) {
   handle.addEventListener('pointerdown', (e) => {
     if (e.button !== 0) return;
     if (e.target.closest('button')) return;
-    if (target === win && isMax) return;
+    if (target.classList.contains('maximized')) return;
     activate(target);
     const startX = e.clientX;
     const startY = e.clientY;

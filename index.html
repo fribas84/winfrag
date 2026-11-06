@@ -75,6 +75,11 @@
       <rect x="5" y="12" width="6" height="1" fill="#000"/>
       <rect x="3" y="13" width="10" height="2" fill="#808080" stroke="#000" stroke-width="1"/>
     </symbol>
+    <symbol id="i-note" viewBox="0 0 32 32">
+      <rect x="8" y="3" width="16" height="26" fill="#fff" stroke="#000" stroke-width="1"/>
+      <rect x="8" y="3" width="16" height="6" fill="#000080" stroke="#000" stroke-width="1"/>
+      <path d="M11 13 H21 M11 17 H21 M11 21 H17" stroke="#6a9ad4" stroke-width="1"/>
+    </symbol>
     <symbol id="i-amp" viewBox="0 0 32 32">
       <rect x="4" y="6" width="24" height="20" fill="#1b1b1b" stroke="#000" stroke-width="1"/>
       <rect x="6" y="8" width="12" height="8" fill="#04160c" stroke="#0c3b22" stroke-width="1"/>
@@ -123,6 +128,10 @@
       <button type="button" class="icon" data-icon="amp">
         <svg class="ico ico-lg" aria-hidden="true"><use href="#i-amp"/></svg>
         <span>CalmAmp</span>
+      </button>
+      <button type="button" class="icon" data-icon="note">
+        <svg class="ico ico-lg" aria-hidden="true"><use href="#i-note"/></svg>
+        <span>Notepad</span>
       </button>
     </div>
 
@@ -303,6 +312,57 @@
       </div>
     </section>
 
+    <section class="window" id="winNote" hidden aria-labelledby="noteTitle">
+      <div class="title-bar" id="noteTitleBar">
+        <svg class="ico ico-sm" aria-hidden="true"><use href="#i-note"/></svg>
+        <div class="title-text" id="noteTitle">Untitled - Notepad</div>
+        <div class="title-controls">
+          <button type="button" class="title-btn" id="noteMin" aria-label="Minimize">
+            <svg aria-hidden="true"><use href="#g-min"/></svg>
+          </button>
+          <button type="button" class="title-btn" id="noteMax" aria-label="Maximize">
+            <svg id="noteGlyphMax" aria-hidden="true"><use href="#g-max"/></svg>
+            <svg id="noteGlyphRestore" hidden aria-hidden="true"><use href="#g-restore"/></svg>
+          </button>
+          <button type="button" class="title-btn" id="noteClose" aria-label="Close">
+            <svg aria-hidden="true"><use href="#g-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="menu-bar">
+        <div class="menu">
+          <button type="button" class="menu-btn" id="noteFileBtn" aria-expanded="false" aria-haspopup="menu"><span class="acc">F</span>ile</button>
+          <div class="menu-pop" role="menu" hidden>
+            <button type="button" role="menuitem" data-action="note-new"><span class="acc">N</span>ew</button>
+            <button type="button" role="menuitem" data-action="note-open"><span class="acc">O</span>pen...</button>
+            <button type="button" role="menuitem" data-action="note-save"><span class="acc">S</span>ave</button>
+            <div class="menu-sep" role="separator"></div>
+            <button type="button" role="menuitem" data-action="note-exit">E<span class="acc">x</span>it</button>
+          </div>
+        </div>
+        <div class="menu">
+          <button type="button" class="menu-btn" id="noteEditBtn" aria-expanded="false" aria-haspopup="menu"><span class="acc">E</span>dit</button>
+          <div class="menu-pop" role="menu" hidden>
+            <button type="button" role="menuitem" data-action="note-undo"><span class="acc">U</span>ndo</button>
+            <div class="menu-sep" role="separator"></div>
+            <button type="button" role="menuitem" data-action="note-cut">Cu<span class="acc">t</span></button>
+            <button type="button" role="menuitem" data-action="note-copy"><span class="acc">C</span>opy</button>
+            <button type="button" role="menuitem" data-action="note-paste"><span class="acc">P</span>aste</button>
+            <button type="button" role="menuitem" data-action="note-delete"><span class="acc">D</span>elete</button>
+            <div class="menu-sep" role="separator"></div>
+            <button type="button" role="menuitem" data-action="note-all">Select <span class="acc">A</span>ll</button>
+          </div>
+        </div>
+      </div>
+      <div class="client note-client">
+        <textarea id="noteText" wrap="off" spellcheck="false" aria-label="Notepad text"></textarea>
+      </div>
+      <div class="status-bar">
+        <div class="status-field status-main" id="noteStatus"></div>
+        <div class="status-field note-pos" id="notePos">Ln 1, Col 1</div>
+      </div>
+    </section>
+
     <section class="window amp" id="winAmp" hidden tabindex="-1" aria-labelledby="ampLogo">
       <div class="amp-title" id="ampTitleBar">
         <button type="button" class="amp-winbtn" id="ampMenuBtn" aria-haspopup="menu" aria-expanded="false" aria-label="CalmAmp menu">
@@ -399,6 +459,10 @@
               <svg class="ico ico-sm" aria-hidden="true"><use href="#i-amp"/></svg>
               <span>CalmAmp</span>
             </button>
+            <button type="button" data-action="open-note">
+              <svg class="ico ico-sm" aria-hidden="true"><use href="#i-note"/></svg>
+              <span>Notepad</span>
+            </button>
             <div class="menu-sep" role="separator"></div>
             <button type="button" data-action="shutdown">
               <svg class="ico ico-sm" aria-hidden="true"><use href="#i-shut"/></svg>
@@ -419,6 +483,10 @@
         <button type="button" class="task-btn" id="taskAmp" hidden aria-pressed="false">
           <svg class="ico ico-sm" aria-hidden="true"><use href="#i-amp"/></svg>
           <span>CalmAmp</span>
+        </button>
+        <button type="button" class="task-btn" id="taskNote" hidden aria-pressed="false">
+          <svg class="ico ico-sm" aria-hidden="true"><use href="#i-note"/></svg>
+          <span>Notepad</span>
         </button>
       </div>
       <div class="tray">
@@ -494,6 +562,26 @@
     </div>
   </div>
 
+  <div class="window dialog" id="dlgNote" role="dialog" aria-modal="true" aria-labelledby="noteAskTitle" hidden>
+    <div class="title-bar">
+      <svg class="ico ico-sm" aria-hidden="true"><use href="#i-note"/></svg>
+      <div class="title-text" id="noteAskTitle">Notepad</div>
+      <div class="title-controls">
+        <button type="button" class="title-btn" id="noteAskX" aria-label="Close">
+          <svg aria-hidden="true"><use href="#g-close"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="dialog-body">
+      <div class="about-copy" id="noteAskText"></div>
+      <div class="dialog-actions dialog-actions-end">
+        <button type="button" class="cmd" id="noteYes">Yes</button>
+        <button type="button" class="cmd" id="noteNo">No</button>
+        <button type="button" class="cmd" id="noteCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <div class="window dialog" id="dlgShut" role="dialog" aria-modal="true" aria-labelledby="shutHeading" hidden data-close="cancel">
     <div class="title-bar">
       <div class="title-text" id="shutHeading">Shut Down Windows</div>
@@ -547,5 +635,6 @@
   </noscript>
   <script src="defrag.js"></script>
   <script src="calmamp.js"></script>
+  <script src="notepad.js"></script>
 </body>
 </html>
