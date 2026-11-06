@@ -75,6 +75,15 @@
       <rect x="5" y="12" width="6" height="1" fill="#000"/>
       <rect x="3" y="13" width="10" height="2" fill="#808080" stroke="#000" stroke-width="1"/>
     </symbol>
+    <symbol id="i-doom" viewBox="0 0 32 32">
+      <rect x="5" y="3" width="22" height="26" fill="#4a1010" stroke="#000" stroke-width="1"/>
+      <rect x="8" y="6" width="16" height="5" fill="#2f6a30"/>
+      <rect x="8" y="11" width="16" height="6" fill="#c9a06a"/>
+      <rect x="10" y="13" width="3" height="3" fill="#1a1008"/>
+      <rect x="19" y="13" width="3" height="3" fill="#1a1008"/>
+      <rect x="14" y="15" width="4" height="2" fill="#6a3030"/>
+      <rect x="9" y="19" width="14" height="7" fill="#3d6b32" stroke="#000" stroke-width="1"/>
+    </symbol>
     <symbol id="i-note" viewBox="0 0 32 32">
       <rect x="8" y="3" width="16" height="26" fill="#fff" stroke="#000" stroke-width="1"/>
       <rect x="8" y="3" width="16" height="6" fill="#000080" stroke="#000" stroke-width="1"/>
@@ -132,6 +141,10 @@
       <button type="button" class="icon" data-icon="note">
         <svg class="ico ico-lg" aria-hidden="true"><use href="#i-note"/></svg>
         <span>Notepad</span>
+      </button>
+      <button type="button" class="icon" data-icon="doom">
+        <svg class="ico ico-lg" aria-hidden="true"><use href="#i-doom"/></svg>
+        <span>Doom</span>
       </button>
     </div>
 
@@ -312,6 +325,42 @@
       </div>
     </section>
 
+    <section class="window" id="winDoom" hidden aria-labelledby="doomTitle">
+      <div class="title-bar" id="doomTitleBar">
+        <svg class="ico ico-sm" aria-hidden="true"><use href="#i-doom"/></svg>
+        <div class="title-text" id="doomTitle">DOOM</div>
+        <div class="title-controls">
+          <button type="button" class="title-btn" id="doomMin" aria-label="Minimize">
+            <svg aria-hidden="true"><use href="#g-min"/></svg>
+          </button>
+          <button type="button" class="title-btn" id="doomMax" aria-label="Maximize">
+            <svg id="doomGlyphMax" aria-hidden="true"><use href="#g-max"/></svg>
+            <svg id="doomGlyphRestore" hidden aria-hidden="true"><use href="#g-restore"/></svg>
+          </button>
+          <button type="button" class="title-btn" id="doomClose" aria-label="Close">
+            <svg aria-hidden="true"><use href="#g-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="menu-bar">
+        <div class="menu">
+          <button type="button" class="menu-btn" aria-expanded="false" aria-haspopup="menu"><span class="acc">G</span>ame</button>
+          <div class="menu-pop" role="menu" hidden>
+            <button type="button" role="menuitem" data-action="doom-full">Full screen</button>
+            <div class="menu-sep" role="separator"></div>
+            <button type="button" role="menuitem" data-action="doom-exit">Exit</button>
+          </div>
+        </div>
+      </div>
+      <div class="client doom-client">
+        <div id="doomBox"></div>
+      </div>
+      <div class="status-bar">
+        <div class="status-field status-main" id="doomStatus">Click the picture to start. DOOM is loaded from js-dos.com.</div>
+        <div class="status-field doom-keys">Arrows, S fire, W use</div>
+      </div>
+    </section>
+
     <section class="window" id="winNote" hidden aria-labelledby="noteTitle">
       <div class="title-bar" id="noteTitleBar">
         <svg class="ico ico-sm" aria-hidden="true"><use href="#i-note"/></svg>
@@ -485,6 +534,10 @@
               <svg class="ico ico-sm" aria-hidden="true"><use href="#i-note"/></svg>
               <span>Notepad</span>
             </button>
+            <button type="button" data-action="open-doom">
+              <svg class="ico ico-sm" aria-hidden="true"><use href="#i-doom"/></svg>
+              <span>Doom</span>
+            </button>
             <div class="menu-sep" role="separator"></div>
             <button type="button" data-action="shutdown">
               <svg class="ico ico-sm" aria-hidden="true"><use href="#i-shut"/></svg>
@@ -509,6 +562,10 @@
         <button type="button" class="task-btn" id="taskNote" hidden aria-pressed="false">
           <svg class="ico ico-sm" aria-hidden="true"><use href="#i-note"/></svg>
           <span>Notepad</span>
+        </button>
+        <button type="button" class="task-btn" id="taskDoom" hidden aria-pressed="false">
+          <svg class="ico ico-sm" aria-hidden="true"><use href="#i-doom"/></svg>
+          <span>Doom</span>
         </button>
       </div>
       <div class="tray">
@@ -658,5 +715,6 @@
   <script src="defrag.js"></script>
   <script src="calmamp.js"></script>
   <script src="notepad.js"></script>
+  <script src="doom.js"></script>
 </body>
 </html>

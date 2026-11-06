@@ -868,6 +868,15 @@ function runAction(action) {
     case 'open-note':
       if (window.NotePad) window.NotePad.open();
       break;
+    case 'open-doom':
+      if (window.DoomWin) window.DoomWin.open();
+      break;
+    case 'doom-full':
+      if (window.DoomWin) window.DoomWin.fullScreen();
+      break;
+    case 'doom-exit':
+      if (window.DoomWin) window.DoomWin.exit();
+      break;
     case 'note-new':
       if (window.NotePad) window.NotePad.newFile();
       break;
@@ -917,6 +926,7 @@ function openIcon(id) {
   else if (id === 'bin') showMsg('Recycle Bin', 'The Recycle Bin is empty.');
   else if (id === 'amp' && window.CalmAmp) window.CalmAmp.open();
   else if (id === 'note' && window.NotePad) window.NotePad.open();
+  else if (id === 'doom' && window.DoomWin) window.DoomWin.open();
 }
 
 function hideTip() {
