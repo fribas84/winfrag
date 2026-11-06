@@ -20,7 +20,7 @@
       var dosbox = null;
 
       function tell(text) {
-        parent.postMessage({ source: 'doom-player', text: text }, location.origin);
+        parent.postMessage({ source: 'doom-player', text: text }, '*');
       }
 
       function wrap(el) {
@@ -84,7 +84,7 @@
       }
 
       window.addEventListener('message', function (event) {
-        if (event.origin !== location.origin) return;
+        if (event.source !== parent) return;
         var data = event.data;
         if (!data || data.source !== 'doom-parent') return;
         if (data.cmd === 'fullscreen' && dosbox && dosbox.requestFullScreen) dosbox.requestFullScreen();

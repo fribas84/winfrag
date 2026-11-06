@@ -18,6 +18,7 @@
   let maximized = false;
   let savedRect = null;
   let running = false;
+  let playerHtml = null;
 
   function setStatus(text) {
     status.textContent = text;
@@ -37,7 +38,24 @@
   function startGame() {
     if (running) return;
     running = true;
-    frame.src = PLAYER;
+    setStatus('Loading DOOM…');
+    const ready = playerHtml
+      ? Promise.resolve(playerHtml)
+      : fetch(PLAYER).then((res) => {
+        if (!res.ok) throw new Error('DOOM did not load.');
+        return res.text();
+      }).then((html) => {
+        playerHtml = html;
+        return html;
+      });
+    ready.then((html) => {
+      if (!running) return;
+      frame.removeAttribute('src');
+      frame.srcdoc = html;
+    }).catch((err) => {
+      running = false;
+      setStatus(err && err.message ? err.message : 'DOOM did not load.');
+    });
   }
 
   function stopGame() {
@@ -45,6 +63,7 @@
       const exitFs = document.exitFullscreen || document.webkitExitFullscreen;
       if (exitFs) exitFs.call(document);
     }
+    frame.srcdoc = '';
     frame.src = 'about:blank';
     running = false;
     setStatus('Click the picture to start. DOOM is loaded from js-dos.com.');
@@ -75,7 +94,7 @@
   function fullScreen() {
     if (!running) return;
     try {
-      frame.contentWindow.postMessage({ source: 'doom-parent', cmd: 'fullscreen' }, window.location.origin);
+      frame.contentWindow.postMessage({ source: 'doom-parent', cmd: 'fullscreen' }, '*');
     } catch (err) { /* the player page is gone */ }
     const req = frame.requestFullscreen || frame.webkitRequestFullscreen;
     if (req) req.call(frame);
@@ -107,7 +126,7 @@
   }
 
   window.addEventListener('message', (event) => {
-    if (event.origin !== window.location.origin) return;
+    if (event.source !== frame.contentWindow) return;
     const data = event.data;
     if (!data || data.source !== 'doom-player' || !running) return;
     if (typeof data.text === 'string') setStatus(data.text);
@@ -139,6 +158,7 @@
       closed: closed,
       running: running,
       src: frame.getAttribute('src'),
+      srcdoc: (frame.getAttribute('srcdoc') || '').slice(0, 24),
       status: status.textContent
     })
   };
